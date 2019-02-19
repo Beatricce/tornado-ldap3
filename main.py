@@ -6,7 +6,7 @@ import requests, cv2, os
 
 
 
-from ldap3 import Server, Connection, ALL 
+from ldap3 import Server, Connection, ALL, ObjectDef, Reader, Writer
 
 # from aux_utils.pic_handler import PIChandler 
 # from aux_utils import count_files_in_directory 
@@ -20,11 +20,19 @@ from ldap3 import Server, Connection, ALL
 
 
 def load_data(user, pwd): 
+	user = 'admin'
+	pwd = 'Secret123'
 	server = Server('ipa.demo1.freeipa.org', use_ssl=True, get_info=ALL)
 	conn = Connection(server, 'uid=' + user +',cn=users,cn=accounts,dc=demo1,dc=freeipa,dc=org', pwd, auto_bind=True)
+	#conn.add('ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org', 'organizationalUnit')
+	#conn.add('cn=b.young,ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org', 'inetOrgPerson', {'givenName': 'Beatrix', 'sn': 'Young', 'departmentNumber': 'DEV', 'telephoneNumber': '1111'})
 	obj_inetorgperson = ObjectDef('inetOrgPerson', conn)
 	r = Reader(conn, obj_inetorgperson, 'ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org')
-	r[0].entry_to_json(include_empty=False)
+	#json = r[0].entry_to_json(include_empty=False)
+	r.search()
+	#w = Writer.from_cursor(r)
+	print('r:', r[0])
+	#print(conn.result)
 	return conn
 
 
